@@ -1,11 +1,14 @@
+type TBlockchain = 'Osmosis' | 'Ethereum' | 'Arbitrum' | 'Zilliqa' | 'Neo'
 interface WalletBalance {
   currency: string;
   amount: number;
+  blockchain: TBlockchain;
 }
 interface FormattedWalletBalance {
   currency: string;
   amount: number;
   formatted: string;
+  blockchain: TBlockchain;
 }
 interface IblockchainValue {
   Osmosis_Value: number;
@@ -30,7 +33,7 @@ const WalletPage: React.FC<BoxProps> = (props: BoxProps) => {
   const balances = useWalletBalances();
   const prices = usePrices();
 
-  const getPriority = (blockchain: any): number => {
+  const getPriority = (blockchain: TBlockchain): number => {
     switch (blockchain) {
       case "Osmosis":
         return Blockchain_VALUE.Osmosis_Value;
@@ -92,3 +95,5 @@ The lhsPriority variable is not completely defined in the SortBalances function.
 Variable-formatted balances cannot be used in source code. This variable should be checked and removed if not used.
 
 The WalletRow component is not defined or imported from the source code. This element needs to be defined or imported for use in the WalletPage page.
+clean code
+ */
