@@ -1,0 +1,94 @@
+interface WalletBalance {
+  currency: string;
+  amount: number;
+}
+interface FormattedWalletBalance {
+  currency: string;
+  amount: number;
+  formatted: string;
+}
+interface IblockchainValue {
+  Osmosis_Value: number;
+  Ethereum_Value: number;
+  Arbitrum_Value: number;
+  Zilliqa_Value: number;
+  Neo_Value: number;
+  Other_Value: number;
+}
+
+const Blockchain_VALUE: IblockchainValue = {
+  Osmosis_Value: 100,
+  Ethereum_Value: 50,
+  Arbitrum_Value: 30,
+  Zilliqa_Value: 20,
+  Neo_Value: 20,
+  Other_Value: -99,
+};
+
+const WalletPage: React.FC<BoxProps> = (props: BoxProps) => {
+  const { children, ...rest } = props;
+  const balances = useWalletBalances();
+  const prices = usePrices();
+
+  const getPriority = (blockchain: any): number => {
+    switch (blockchain) {
+      case "Osmosis":
+        return Blockchain_VALUE.Osmosis_Value;
+      case "Ethereum":
+        return Blockchain_VALUE.Ethereum_Value;
+      case "Arbitrum":
+        return Blockchain_VALUE.Arbitrum_Value;
+      case "Zilliqa":
+        return Blockchain_VALUE.Zilliqa_Value;
+      case "Neo":
+        return Blockchain_VALUE.Neo_Value;
+      default:
+        return Blockchain_VALUE.Other_Value;
+    }
+  };
+
+  const sortedBalances = useMemo(() => {
+    const filteredBalances = balances.filter(
+      (balance: WalletBalance) => balance.amount <= 0 || getPriority(balance.blockchain) > -99
+    );
+
+    return filteredBalances.sort(
+      (lhs: WalletBalance, rhs: WalletBalance) => getPriority(rhs.blockchain) - getPriority(lhs.blockchain)
+    );
+  }, [balances]);
+
+  const formattedBalances = sortedBalances.map((balance: WalletBalance) => ({
+    ...balance,
+    formatted: balance.amount.toFixed(),
+  }));
+
+  const rows = sortedBalances.map((balance: WalletBalance, index: number) => {
+    const usdValue = prices[balance.currency] * balance.amount;
+
+    return (
+      <WalletRow
+        className={classes.row}
+        key={index}
+        amount={balance.amount}
+        usdValue={usdValue}
+        formattedAmount={balance.formatted}
+      />
+    );
+  });
+
+  return <div {...props}>{rows}</div>;
+};
+
+/* Missing solution for WalletBalance and FormattedWalletBalance interfaces (interfaces). A detailed description of the data structure and goals of the interface properties should be provided.
+
+There is no information about BoxProps. A full definition or explanation of BoxProps is needed for readers to understand its properties and functions.
+
+Lack of definition and development of useWalletBalances() and usePrices() functions. Information should be provided on how to obtain data from these data sources and process them for use in the WalletPage site.
+
+The getPriority() function is not completely defined. The case where there is no value priority for blockchain provisioning should be checked and handled.
+
+The lhsPriority variable is not completely defined in the SortBalances function. Need to fix typos and use BalancePriority instead of lhsPriority.
+
+Variable-formatted balances cannot be used in source code. This variable should be checked and removed if not used.
+
+The WalletRow component is not defined or imported from the source code. This element needs to be defined or imported for use in the WalletPage page.
